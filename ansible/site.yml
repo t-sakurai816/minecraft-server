@@ -1,0 +1,8 @@
+---
+- name: apply Initial setting, MinecraftServer
+  hosts: minecraftServer
+  remote_user: ec2-user
+
+  roles:
+    - common
+    - minecraft
