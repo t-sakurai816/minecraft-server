@@ -29,6 +29,15 @@ resource "aws_security_group" "minecraft" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  ingress {
+    description      = "Minecraft from ALL"
+    from_port        = 25565
+    to_port          = 25565
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
   # TODO: minecraft server
 
   egress {
