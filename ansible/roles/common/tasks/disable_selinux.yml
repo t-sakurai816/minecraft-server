@@ -1,0 +1,8 @@
+---
+- name: Install Python module for SELinux
+  yum: name=libselinux-python state=installed
+
+- name: Disable SELinux
+  selinux: state=disabled
+  register: selinux
+# TODO: reboot
