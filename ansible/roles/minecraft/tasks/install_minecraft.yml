@@ -1,0 +1,56 @@
+---
+- name: install java16
+  become: yes
+  yum: name=https://corretto.aws/downloads/resources/16.0.0.36.1/java-16-amazon-corretto-devel-16.0.0.36-1.x86_64.rpm
+
+- name: mkdir /var/minecraft
+  become: yes
+  file: path=/var/minecraft state=directory owner=minecraft group=minecraft mode=0755
+
+- name: download MinecraftServer1.17.1
+  become: yes
+  get_url:
+    url: https://launcher.mojang.com/v1/objects/a16d67e5807f57fc4e550299cf20226194497dc2/server.jar
+    dest: /tmp
+
+- name: copy MinecraftServer1.17.1
+  become: yes
+  shell: creates=/var/minecraft/minecraft_server.1.17.1.jar cp /tmp/server.jar /var/minecraft/minecraft_server.1.17.1.jar
+
+- name: backup MinecraftServer1.17.1
+  become: yes
+  shell: creates=/var/minecraft/minecraft_server.1.17.1.jar.bk cp /tmp/server.jar /var/minecraft/minecraft_server.1.17.1.jar.bk
+
+- name: chown MinecraftServer1.17.1
+  become: yes
+  file: path=/var/minecraft/minecraft_server.1.17.1.jar owner=minecraft group=minecraft  mode=0755
+
+# - name: Delete server.jar for /tmp
+#   become: yes
+#   file:
+#     state: absent
+#     path: /tmp/server.jar
+
+- name: copy eula.txt
+  become: yes
+  copy:
+    src: ./template/eula.txt
+    dest: /var/minecraft/
+    owner: minecraft
+    group: minecraft
+
+- name: copy server.properties
+  become: yes
+  copy:
+    src: ./template/server.properties
+    dest: /var/minecraft/
+    owner: minecraft
+    group: minecraft
+
+- name: copy whitelist.json
+  become: yes
+  copy:
+    src: ./template/whitelist.json
+    dest: /var/minecraft/
+    owner: minecraft
+    group: minecraft

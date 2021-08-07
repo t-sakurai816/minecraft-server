@@ -1,0 +1,8 @@
+---
+- name: install httpd
+  become: yes
+  yum: name=httpd
+
+- name: start httpd
+  become: yes
+  systemd: name=httpd state=restarted enabled=yes

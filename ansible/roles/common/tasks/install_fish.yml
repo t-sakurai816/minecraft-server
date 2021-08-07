@@ -1,0 +1,10 @@
+---
+- name: get fish
+  become: yes
+  get_url:
+    url: https://download.opensuse.org/repositories/shells:fish:release:3/CentOS_7/shells:fish:release:3.repo
+    dest: /etc/yum.repos.d/
+
+- name: install fish
+  become: yes
+  yum: name=fish
