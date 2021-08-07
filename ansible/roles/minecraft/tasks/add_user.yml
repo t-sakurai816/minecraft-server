@@ -1,0 +1,15 @@
+---
+- name: create groupt for minecraft
+  become: true
+  group:
+    name: minecraft
+
+- name: add minecraft (nologin)
+  become: true
+  user:
+    name: minecraft
+    groups: minecraft
+    shell: /sbin/nologin
+    append: yes
+    comment: "minecraft nologin User"
+    state: present
