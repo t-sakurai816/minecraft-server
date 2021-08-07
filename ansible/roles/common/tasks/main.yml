@@ -1,0 +1,4 @@
+---
+# 他のtasksディレクトリで作成したものを実行する
+- include: install_git.yml
+- include: install_fish.yml
