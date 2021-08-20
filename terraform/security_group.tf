@@ -38,8 +38,6 @@ resource "aws_security_group" "minecraft" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  # TODO: minecraft server
-
   egress {
     from_port        = 0
     to_port          = 0
