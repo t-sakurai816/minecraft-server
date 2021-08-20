@@ -18,6 +18,7 @@ resource "aws_instance" "instance" {
   vpc_security_group_ids  = [aws_security_group.minecraft.id]
   subnet_id               = aws_subnet.public_1a.id
   key_name                = "minecraft"
+  iam_instance_profile    = "EC2_SSM"
   availability_zone       = "ap-northeast-1a"
   disable_api_termination = false
 
