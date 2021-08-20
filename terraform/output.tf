@@ -4,7 +4,7 @@ output "instance_ip" {
 }
 
 # インスタンスIDを出力
-output "instance_id" {
-  # filename = "./instance_id"
-  value = aws_instance.instance.id
+resource "local_file" "instance-id" {
+  filename = "./instance_id"
+  content  = aws_instance.instance.id
 }
