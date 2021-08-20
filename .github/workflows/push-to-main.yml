@@ -1,0 +1,63 @@
+name: terraform apply & exec ansible
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/**"
+      - "ansible/**"
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-1
+
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+      - name: Create zip file for ansible/
+        run: zip -r ./ansible.zip ./ansible
+
+      - name: Commit ansible.zip
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add ./ansible.zip
+          git commit -m "CREATE: ansible.zip" -a
+
+      - name: Push ansible.zip
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+
+      - name: sed isntanse_id & REPO_NAME
+        run: |
+          INSTANCE_ID="$(cat ./terraform/instance_id)"
+          REPO_NAME=$(echo ${{ github.repository }} | sed -e "s#.*/##")
+          sed -e 's/INSTANCE_ID/'$INSTANCE_ID'/g' -e 's/REPO_NAME/'$REPO_NAME'/g' ./ansible.sh > ./tmp-ansible.sh
+          cat ./tmp-ansible.sh
+
+      - name: Executing Ansible via SSM
+        run: bash ./tmp-ansible.sh
